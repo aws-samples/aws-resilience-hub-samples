@@ -1,11 +1,6 @@
-## My Project
+## AWS Resilience Hub repo for code samples used in blogs 
 
-TODO: Fill this README out!
 
-Be sure to:
-
-* Change the title in this README
-* Edit your repository description on GitHub
 
 ## Security
 
