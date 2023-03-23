@@ -75,7 +75,12 @@ function createbucket(){
 
 #Delete local JSON file (optional)
 function deleteJSONFile(){
-    rm -rf *.json
+    rm -rf ./*.json
+}
+
+#Delete local report file (optional)
+function deleteHTMLFile(){
+    rm -rf ./*.html
 }
 
 function createHTMLTemplate(){
@@ -109,12 +114,12 @@ function GetAppAssessments(){
     counter=0
     SUMMARYTBL=""
     FolderName=$(date +%Y%m%d%H%M)
-
+    echo $Assessments >> "assessment_list.json"
     for row in $(echo "${Assessments}" | jq -r '.[] | @base64'); do
         _jq() {
             echo "${row}" | base64 --decode | jq -r "${1}"
         }
-    
+
         apparn=$(_jq '.appArn')
         assessmentArn=$(_jq '.assessmentArn')
         resiliencyScore=$(_jq '.resiliencyScore')
@@ -154,7 +159,8 @@ function GetAppAssessments(){
         SUBROW=""
         UNREC="2592001"
         Results=$(aws resiliencehub list-app-component-compliances --assessment-arn $assessmentArn --region $Region --profile $profile 2>&1)
-        echo $Results >> "compliance-report.json"
+        arnname=${assessmentArn:(-36)}
+        echo $Results >> "assessment-components-"$arnname".json"
         Output=$(echo "$Results" | jq -r '.componentCompliances') 
         ROWCONTENT=$ROWCONTENT$TR$EMPTYTD"<td colspan=6>"
         SUBROW="<table id='assessment'><tr><th colspan=4>Component Name</th><th colspan=4>Application</th><th colspan=4>Infrastructure</th><th colspan=4>Availability Zone</th><th colspan=4>Region</th></tr>"
@@ -216,7 +222,7 @@ function GetAppAssessments(){
         SUBROW=$SUBROW"</table>"
         ROWCONTENT=$ROWCONTENT$SUBROW$CLSTD$CLSTR
         
-        Filename=${assessmentArn:(-36)}
+        Filename="assessment-"$arnname
         echo $DescribeAssessment > $Filename.json
         aws s3 cp ./$Filename'.json' 's3://'$S3Bucket'/reports'$FolderName'/'$Filename'.json' --region $Region --profile $profile 2>&1
         EMPTYROW="<tr><td colspan=7>&nbsp;</td></tr>"
@@ -224,13 +230,13 @@ function GetAppAssessments(){
         counter=$[$counter +1]
     done
 
-    #Optional cleanup - Delete generated JSON file
-    deleteJSONFile
-
     HTMLFILE=$HEADER$BODY$Region$TABLE$SUMMARYTBL$FOOTER
     echo $HTMLFILE > 'report.html'
     aws s3 cp ./report.html 's3://'$S3Bucket'/reports'$FolderName'/report.html' --region $Region
-        
+
+    #Cleanup - Delete generated JSON annd HTML files
+    deleteJSONFile
+    deleteHTMLFile        
 }
 
 
