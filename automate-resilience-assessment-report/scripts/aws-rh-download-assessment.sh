@@ -96,7 +96,7 @@ function createHTMLTemplate(){
     TDCOL4="<td colspan=4>"
 }
 
-#Main Function to downnload assessment reports
+#Main Function to download assessment reports
 function GetAppAssessments(){
     
     # Create S3 bucket if it does't exists
@@ -159,8 +159,8 @@ function GetAppAssessments(){
         SUBROW=""
         UNREC="2592001"
         Results=$(aws resiliencehub list-app-component-compliances --assessment-arn $assessmentArn --region $Region --profile $profile 2>&1)
-        arnname=${assessmentArn:(-36)}
-        echo $Results >> "assessment-components-"$arnname".json"
+        ARNNAME=${assessmentArn:(-36)}
+        echo $Results >> "assessment-components-"$ARNNAME".json"
         Output=$(echo "$Results" | jq -r '.componentCompliances') 
         ROWCONTENT=$ROWCONTENT$TR$EMPTYTD"<td colspan=6>"
         SUBROW="<table id='assessment'><tr><th colspan=4>Component Name</th><th colspan=4>Application</th><th colspan=4>Infrastructure</th><th colspan=4>Availability Zone</th><th colspan=4>Region</th></tr>"
@@ -222,7 +222,7 @@ function GetAppAssessments(){
         SUBROW=$SUBROW"</table>"
         ROWCONTENT=$ROWCONTENT$SUBROW$CLSTD$CLSTR
         
-        Filename="assessment-"$arnname
+        Filename="assessment-"$ARNNAME
         echo $DescribeAssessment > $Filename.json
         aws s3 cp ./$Filename'.json' 's3://'$S3Bucket'/reports'$FolderName'/'$Filename'.json' --region $Region --profile $profile 2>&1
         EMPTYROW="<tr><td colspan=7>&nbsp;</td></tr>"
@@ -234,7 +234,7 @@ function GetAppAssessments(){
     echo $HTMLFILE > 'report.html'
     aws s3 cp ./report.html 's3://'$S3Bucket'/reports'$FolderName'/report.html' --region $Region
 
-    #Cleanup - Delete generated JSON annd HTML files
+    #Cleanup - Delete generated JSON and HTML files
     deleteJSONFile
     deleteHTMLFile        
 }
