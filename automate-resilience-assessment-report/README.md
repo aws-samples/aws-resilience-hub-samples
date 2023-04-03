@@ -66,7 +66,19 @@ Debian/Ubuntu:
 
 Make sure you are in project home directory
 
-`$ cd scripts`
-`$ ./aws-rh-download-assessment.sh <profile> `
-`Region [us-east-1]  : `
-`S3 Bucket Name : `
+```
+$ cd scripts
+$ ./aws-rh-download-assessment.sh <profile> 
+Region [us-east-1]  : 
+S3 Bucket Name : 
+```
+
+### Output:
+
+This script will generate assessment reports for all the applications for a specific region chosen and upload it to the S3 bucket provided. 
+Individual reports are generated in JSON format and a summary report is generated in HTML format.
+
+Sample HTMl report is attached below:
+
+![Screenshot 2023-03-21 at 8 11 48 PM](https://user-images.githubusercontent.com/12705995/229577799-49714c87-aa10-4f10-a7d2-7089a4ae4e6d.png)
+
