@@ -234,7 +234,7 @@ function GetAppAssessments(){
     echo $HTMLFILE > 'report.html'
     aws s3 cp ./report.html 's3://'$S3Bucket'/reports'$FolderName'/report.html' --region $Region
 
-    #Optional cleanup - Delete local JSON and HTML files generated. Comment it if you want to persist local copy
+    #Optional cleanup - Delete JSON and HTML files generated locally. Comment it if you want to persist local copy
     deleteJSONFile
     deleteHTMLFile        
 }
