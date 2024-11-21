@@ -68,9 +68,13 @@ Make sure you are in project home directory
 
 ```
 $ cd scripts
-$ ./aws-rh-download-assessment.sh <profile> 
+$ ./aws-rh-download-assessment.sh <profile>
 Region [us-east-1]  : 
-S3 Bucket Name : 
+S3 Bucket Name :
+
+*NOTE:- If you are using a default profile then no need to mention the profile.
+$ ./aws-rh-download-assessment.sh
+
 ```
 
 ### Output:
